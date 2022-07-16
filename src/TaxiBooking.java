@@ -88,35 +88,47 @@ class TaxiBooking extends CustomerTravelDetails {
     System.out.println("Enter " + inputPoint + " location");
   }
 
-  public static void getAvailableTaxi(char pickupPoint, char dropPoint, int pickupTime) {
-    ArrayList<Taxi> taxiList = TaxiDetails.getInstance().taxiList;
-    ArrayList<Taxi> availableTaxi;
-    char tempPoint = pickupPoint;
-    while(true){
-      availableTaxi = new ArrayList<>();
+  public static void getAvailableTaxi(char pickupPoint, char dropPoint, int pickupTime) { 
+    char nearestPoint = pickupPoint;
+    int convertedPoint = (int)pickupPoint-64;
+    int availabeCount = getAvailableTaxiCount(pickupPoint).size();
+    boolean check = true;
+    int i = 1;
 
-      for (Taxi taxi : taxiList) {
-        if (taxi.avaiablePoint == tempPoint)
-          availableTaxi.add(taxi);
-      }
-      if(availableTaxi.size()==0){
-        if((int)pickupTime==65)
-          tempPoint = (char)((int)tempPoint+1);
-        else
-          if(((int)pickupPoint>=65 && (int)pickupPoint<=69) && tempPoint=='A')
-            tempPoint = (char)((int)pickupTime+1);
-          else
-            tempPoint = (char)((int)tempPoint-1);
+    while(check){ 
+      if(availabeCount==0){
+        if((convertedPoint-i)<=0)
+          continue;
+        if((convertedPoint-i)>0){
+          nearestPoint = (char)(convertedPoint-i);
+          availabeCount = getAvailableTaxiCount(nearestPoint).size();
+          if(availabeCount==0){
+            if((convertedPoint+i)<7){
+              nearestPoint = (char)(convertedPoint+i);
+              availabeCount = getAvailableTaxiCount(nearestPoint).size();
+              if(availabeCount==0)
+                i++;
+            } 
+          }
+        
       }
       else  
         break;
     }
-    
+  }
+
+  public static ArrayList<Taxi> getAvailableTaxiCount(char pickupPoint) {
+    ArrayList<Taxi> taxiList = TaxiDetails.getInstance().taxiList;
+    ArrayList<Taxi> availableTaxi = new ArrayList<>();
+    for (Taxi taxi : taxiList) {
+      if (taxi.avaiablePoint == pickupPoint)
+        availableTaxi.add(taxi);
+    }
     Collections.sort(availableTaxi, new Comparator<Taxi>() {
       public int compare(Taxi e1, Taxi e2) {
         return Integer.valueOf(e1.getEarned()).compareTo(Integer.valueOf(e2.getEarned()));
       }
     });
-
+    return availableTaxi;
   }
 }
