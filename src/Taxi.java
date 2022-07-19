@@ -3,13 +3,13 @@ import java.util.ArrayList;
 public class Taxi {
   static int counter = 1;
   int taxiNumber;
-  char avaiablePoint;
+  char currentPoint;
   int earned;
   ArrayList<BookedTaxiDetails> details;
   boolean isFree;
   Taxi() {
     taxiNumber=counter++;
-    avaiablePoint = 'A';
+    currentPoint = 'A';
     earned = 0;
     isFree = true;
     details = new ArrayList<>();
@@ -31,11 +31,11 @@ public class Taxi {
     this.taxiNumber = taxiNumber;
   }
 
-  public char getAvaiablePoint() {
-    return avaiablePoint;
+  public char getCurrentPoint() {
+    return currentPoint;
   }
 
-  public void setAvaiablePoint(char avaiablePoint) {
-    this.avaiablePoint = avaiablePoint;
+  public void setCurrentPoint(char currentPoint) {
+    this.currentPoint = currentPoint;
   }
 }

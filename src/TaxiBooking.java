@@ -131,7 +131,7 @@ class TaxiBooking extends CustomerTravelDetails {
   public static ArrayList<Taxi> getAvailableTaxi(char pickupPoint) {
     ArrayList<Taxi> availableTaxi = new ArrayList<>();
     for (Taxi taxi : TaxiDetails.getInstance().taxiList) {
-      if (taxi.avaiablePoint == pickupPoint && taxi.isFree)
+      if (taxi.currentPoint == pickupPoint && taxi.isFree)
         availableTaxi.add(taxi);
     }
     Collections.sort(availableTaxi, new Comparator<Taxi>() {
