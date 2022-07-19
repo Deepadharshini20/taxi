@@ -13,8 +13,7 @@ abstract class CustomerTravelDetails extends Thread{
       String input = TaxiBookApp.in.readLine();
       if (!input.equals(""))
         location = input.toUpperCase().charAt(0);
-      if ((location == 'A' || location == 'B' || location == 'C' || location == 'D' || location == 'E'
-          || location == 'F')
+      if ((location>='A' && location<='F')
           && !input.equals(""))
         break;
       else
