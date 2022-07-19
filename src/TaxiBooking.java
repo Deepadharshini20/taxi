@@ -136,7 +136,7 @@ class TaxiBooking extends CustomerTravelDetails {
     }
     Collections.sort(availableTaxi, new Comparator<Taxi>() {
       public int compare(Taxi e1, Taxi e2) {
-        return Integer.valueOf(e1.getEarned()).compareTo(Integer.valueOf(e2.getEarned()));
+        return Double.valueOf(e1.getEarned()).compareTo(Double.valueOf(e2.getEarned()));
       }
     });
     return availableTaxi;
@@ -144,7 +144,7 @@ class TaxiBooking extends CustomerTravelDetails {
 
   public static void bookingProcess(ArrayList<Taxi> taxiList, char pickupPoint, char dropPoint, int pickupTime) {   
     int distance = Math.abs((int) pickupPoint - (int) dropPoint);
-    int totalCharge = ((distance * 15) - 5) * 10 + 100;
+    double totalCharge = ((distance * 15) - 5) * 10 + 100;
     int taxiNumber = taxiList.get(0).gettaxiNumber();
     System.out.println("Amount to pay: " + totalCharge);
 

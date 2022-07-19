@@ -1,25 +1,24 @@
 import java.util.ArrayList;
-
 public class Taxi {
   static int counter = 1;
   int taxiNumber;
   char currentPoint;
-  int earned;
+  double earned;
   ArrayList<BookedTaxiDetails> details;
   boolean isFree;
   Taxi() {
     taxiNumber=counter++;
     currentPoint = 'A';
-    earned = 0;
+    earned = 0.00;
     isFree = true;
     details = new ArrayList<>();
   }
 
-  public int getEarned() {
+  public double getEarned() {
     return earned;
   }
 
-  public void setEarned(int earned) {
+  public void setEarned(double earned) {
     this.earned = earned;
   }
 

@@ -6,9 +6,9 @@ public class BookedTaxiDetails {
   char to;
   int pickupTime;
   int dropTime;
-  int amount;
+  double amount;
 
-  BookedTaxiDetails(char from,char to,int pickupTime,int dropTime,int amount){
+  BookedTaxiDetails(char from,char to,int pickupTime,int dropTime,double amount){
     bookingId = count1++;
     customerId = count2++;
     this.from = from;
