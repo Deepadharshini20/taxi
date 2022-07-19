@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class TaxiDetails {
   public ArrayList<Taxi> taxiList;
   private static TaxiDetails taxiObj = null;
-
+  
   public static TaxiDetails getInstance() {
     if(taxiObj==null)
       taxiObj = new TaxiDetails();
@@ -16,7 +16,6 @@ public class TaxiDetails {
 
   public void add(Taxi taxi){
     taxiList.add(taxi);
-    System.out.println("jeeva");
   }
   
 }

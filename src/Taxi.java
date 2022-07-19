@@ -1,11 +1,18 @@
+import java.util.ArrayList;
+
 public class Taxi {
-  static int taxiCount = 0;
+  static int counter = 1;
+  int taxiNumber;
   char avaiablePoint;
   int earned;
+  ArrayList<BookedTaxiDetails> details;
+  boolean isFree;
   Taxi() {
-    taxiCount = taxiCount + 1;
+    taxiNumber=counter++;
     avaiablePoint = 'A';
     earned = 0;
+    isFree = true;
+    details = new ArrayList<>();
   }
 
   public int getEarned() {
@@ -16,12 +23,12 @@ public class Taxi {
     this.earned = earned;
   }
 
-  public static int getTaxiCount() {
-    return taxiCount;
+  public int gettaxiNumber() {
+    return taxiNumber;
   }
 
-  public static void setTaxiCount(int taxiCount) {
-    Taxi.taxiCount = taxiCount;
+  public void settaxiNumber(int taxiNumber) {
+    this.taxiNumber = taxiNumber;
   }
 
   public char getAvaiablePoint() {

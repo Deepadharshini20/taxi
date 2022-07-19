@@ -3,14 +3,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-abstract class CustomerTravelDetails {
+abstract class CustomerTravelDetails extends Thread{
   static boolean isTrue = true;
 
   public char getLocation() throws IOException {
     char location = '\0';
     while (isTrue) {
-      System.out.println("Enter A to F only!!");
-      String input = App.in.readLine();
+      System.out.println("Enter A to F..");
+      String input = TaxiBookApp.in.readLine();
       if (!input.equals(""))
         location = input.toUpperCase().charAt(0);
       if ((location == 'A' || location == 'B' || location == 'C' || location == 'D' || location == 'E'
@@ -18,7 +18,7 @@ abstract class CustomerTravelDetails {
           && !input.equals(""))
         break;
       else
-        System.out.println("enter only A to F only");
+        System.out.println("Enter only A to F!!");
     }
     return location;
   }
@@ -26,7 +26,8 @@ abstract class CustomerTravelDetails {
   public int getTime() throws IOException {
     int time = 0;
     while (isTrue) {
-      String input = App.in.readLine();
+      System.out.println("Enter pickup time: ");
+      String input = TaxiBookApp.in.readLine();
       try {
         time = Integer.parseInt(input);
         break;
@@ -45,32 +46,11 @@ class TaxiBooking extends CustomerTravelDetails {
   static int id = 0;
 
   public static void book() throws IOException {
-    char pickupPoint = '\0';
-    char dropPoint = '\0';
-    int pickupTime = 0;
-
-    while (true) {
-      String input = "";
-      char yesOrNo = '\0';
-      while (isTrue) {
-        System.out.println("Do u want to book a taxi?\nEnter y or n: ");
-        input = App.in.readLine();
-        if (!input.equals(""))
-          yesOrNo = input.toUpperCase().charAt(0);
-        if ((yesOrNo == 'F' || yesOrNo == 'M') && !input.equals(""))
-          break;
-        else
-          System.out.println("enter only f or m");
-      }
-      if (yesOrNo == 'Y') {
-        id += 1;
-        pickupPoint = getPickupPoint();
-        dropPoint = getDropPoint();
-        pickupTime = obj.getTime();
-        getAvailableTaxi(pickupPoint, dropPoint, pickupTime);
-      } else
-        break;
-    }
+    id += 1;
+    char pickupPoint = getPickupPoint();
+    char dropPoint = getDropPoint();
+    int pickupTime = obj.getTime();
+    bookTaxi(pickupPoint, dropPoint, pickupTime);
   }
 
   public static char getPickupPoint() throws IOException {
@@ -88,40 +68,71 @@ class TaxiBooking extends CustomerTravelDetails {
     System.out.println("Enter " + inputPoint + " location");
   }
 
-  public static void getAvailableTaxi(char pickupPoint, char dropPoint, int pickupTime) { 
+  public static void bookTaxi(char pickupPoint, char dropPoint, int pickupTime) {
     char nearestPoint = pickupPoint;
-    int convertedPoint = (int)pickupPoint-64;
-    int availabeCount = getAvailableTaxiCount(pickupPoint).size();
+    int convertedPoint = (int) pickupPoint - 64;
+    ArrayList<Taxi> availableTaxi = getAvailableTaxi(pickupPoint);
+    ArrayList<Taxi> availableTaxileft = new ArrayList<>();
+    int availabeCount = availableTaxi.size();
     boolean check = true;
     int i = 1;
-
-    while(check){ 
-      if(availabeCount==0){
-        if((convertedPoint-i)<=0)
-          continue;
-        if((convertedPoint-i)>0){
-          nearestPoint = (char)(convertedPoint-i);
-          availabeCount = getAvailableTaxiCount(nearestPoint).size();
-          if(availabeCount==0){
-            if((convertedPoint+i)<7){
-              nearestPoint = (char)(convertedPoint+i);
-              availabeCount = getAvailableTaxiCount(nearestPoint).size();
-              if(availabeCount==0)
-                i++;
-            } 
-          }
-        
-      }
-      else  
-        break;
+    int rej  = 1;
+    for(Taxi t:TaxiDetails.getInstance().taxiList){
+      if(t.isFree)
+        rej = 0;
     }
+    if(rej == 1){
+      System.out.println("sorry No taxi is Available Now :-( ");
+      System.out.println("sorry your booking is rejected ");
+      return;
+    }
+    while (check) {
+      if (availabeCount == 0) {
+        if ((convertedPoint - i) < 1)
+          continue;
+        if ((convertedPoint - i) > 0) {
+          nearestPoint = (char) (pickupPoint - i);
+          availableTaxileft = getAvailableTaxi(nearestPoint);
+          if ((convertedPoint + i) < 7) {
+            nearestPoint = (char) (pickupPoint + i);
+            availableTaxi = getAvailableTaxi(nearestPoint);
+            availableTaxi.addAll(availableTaxileft);
+            availabeCount = availableTaxi.size();
+            if (availabeCount >0){
+              System.out.println("Taxi can be allotted");
+              bookingProcess(availableTaxi, pickupPoint, dropPoint, pickupTime);
+              check = false;
+              break;
+            }
+          } 
+          if(availableTaxileft.size()>0){
+            System.out.println("Taxi can be allotted");
+            bookingProcess(availableTaxileft, pickupPoint, dropPoint, pickupTime);
+            check = false;
+            break;
+          }
+          if((availabeCount==0)||(convertedPoint+i)>6){
+            i++;
+            continue;
+          }
+            
+          if((convertedPoint+i)>6 && (convertedPoint-i)<1)
+            return;
+        }
+      } 
+      else {
+        System.out.println("Taxi can be allotted");
+        bookingProcess(availableTaxi, pickupPoint, dropPoint, pickupTime);
+        break;
+      }
+    }
+    
   }
 
-  public static ArrayList<Taxi> getAvailableTaxiCount(char pickupPoint) {
-    ArrayList<Taxi> taxiList = TaxiDetails.getInstance().taxiList;
+  public static ArrayList<Taxi> getAvailableTaxi(char pickupPoint) {
     ArrayList<Taxi> availableTaxi = new ArrayList<>();
-    for (Taxi taxi : taxiList) {
-      if (taxi.avaiablePoint == pickupPoint)
+    for (Taxi taxi : TaxiDetails.getInstance().taxiList) {
+      if (taxi.avaiablePoint == pickupPoint && taxi.isFree)
         availableTaxi.add(taxi);
     }
     Collections.sort(availableTaxi, new Comparator<Taxi>() {
@@ -130,5 +141,26 @@ class TaxiBooking extends CustomerTravelDetails {
       }
     });
     return availableTaxi;
+  }
+
+  public static void bookingProcess(ArrayList<Taxi> taxiList, char pickupPoint, char dropPoint, int pickupTime) {   
+    int distance = Math.abs((int) pickupPoint - (int) dropPoint);
+    int totalCharge = ((distance * 15) - 5) * 10 + 100;
+    int taxiNumber = taxiList.get(0).gettaxiNumber();
+    System.out.println("Amount to pay: " + totalCharge);
+
+    for (Taxi taxi : TaxiDetails.getInstance().taxiList) {
+      if (taxi.gettaxiNumber() == taxiNumber) {
+        taxi.details.add(new BookedTaxiDetails(pickupPoint, dropPoint, pickupTime, pickupTime + distance, totalCharge));
+        taxi.earned += totalCharge;
+        taxiHold th = new taxiHold(taxi, distance,dropPoint);
+        th.start();
+        try {
+          Thread.sleep(1000);
+        } catch (Exception e) {
+          System.out.println(e);
+        }
+      }
+    }
   }
 }
